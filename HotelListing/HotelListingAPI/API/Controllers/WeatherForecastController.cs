@@ -1,3 +1,4 @@
+using HotelListingAPI.API;
 using Microsoft.AspNetCore.Mvc;
 
 namespace HotelListingAPI.Controllers

@@ -11,6 +11,9 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+builder.Configuration.SetBasePath(Directory.GetCurrentDirectory() + "\\API")
+                    .AddJsonFile("appsettings.json");
+
 var connectionString = builder.Configuration.GetConnectionString("HotelListingDBString");
 
 builder.Services.AddDbContext<HotelListingDbContext>(options =>

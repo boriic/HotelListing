@@ -1,9 +1,10 @@
 ﻿using HotelListingAPI.DAL.Entities;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace HotelListingAPI.DAL.Context
 {
-    public class HotelListingDbContext : DbContext
+    public class HotelListingDbContext : IdentityDbContext<User>
     {
         public HotelListingDbContext(DbContextOptions options) : base(options)
         {

@@ -1,17 +1,23 @@
 using HotelListingAPI.API.Configurations;
 using HotelListingAPI.DAL.Context;
+using HotelListingAPI.DAL.Entities;
 using HotelListingAPI.Repository;
 using HotelListingAPI.Repository.Common;
 using HotelListingAPI.Repository.Common.CountryRepository;
 using HotelListingAPI.Repository.Common.HotelRepository;
 using HotelListingAPI.Repository.CountryRepository;
 using HotelListingAPI.Repository.HotelRepository;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+
+builder.Services.AddIdentityCore<User>()
+    .AddRoles<IdentityRole>()
+    .AddEntityFrameworkStores<HotelListingDbContext>();
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

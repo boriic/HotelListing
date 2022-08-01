@@ -9,11 +9,13 @@ namespace HotelListingAPI.API.Configurations
     {
         public MapperConfig()
         {
-            CreateMap<Country, CountryCreateDto>().ReverseMap();
-            CreateMap<Country, CountryGetDto>().ReverseMap();
             CreateMap<Country, CountryDto>().ReverseMap();
-            CreateMap<Country, UpdateCountryDto>().ReverseMap();
+            CreateMap<Country, CountryGetUpdateDto>().ReverseMap();
+            CreateMap<Country, CountryCreateDto>().ReverseMap();
+
             CreateMap<Hotel, HotelDto>().ReverseMap();
+            CreateMap<Hotel, HotelGetUpdateDto>().ReverseMap();
+            CreateMap<Hotel, HotelCreateDto>().ReverseMap();
         }
     }
 }

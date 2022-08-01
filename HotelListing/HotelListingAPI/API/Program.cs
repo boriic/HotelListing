@@ -2,8 +2,10 @@ using HotelListingAPI.API.Configurations;
 using HotelListingAPI.DAL.Context;
 using HotelListingAPI.Repository;
 using HotelListingAPI.Repository.Common;
-using HotelListingAPI.Repository.Common.CountryRepositories;
-using HotelListingAPI.Repository.CountryRepositories;
+using HotelListingAPI.Repository.Common.CountryRepository;
+using HotelListingAPI.Repository.Common.HotelRepository;
+using HotelListingAPI.Repository.CountryRepository;
+using HotelListingAPI.Repository.HotelRepository;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
 
@@ -37,6 +39,7 @@ builder.Services.AddAutoMapper(typeof(MapperConfig));
 
 builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
 builder.Services.AddScoped<ICountryRepository, CountryRepository>();
+builder.Services.AddScoped<IHotelRepository, HotelRepository>();
 
 var app = builder.Build();
 

@@ -1,11 +1,10 @@
-﻿namespace HotelListingAPI.API.Models.Hotel
+﻿using HotelListingAPI.API.Models.Country;
+
+namespace HotelListingAPI.API.Models.Hotel
 {
-    public class HotelDto
+    public class HotelDto : BaseHotelDto
     {
         public int Id { get; set; }
-        public string Name { get; set; }
-        public string Address { get; set; }
-        public double Rating { get; set; }
-        public int Capacity { get; set; }
+        public CountryGetUpdateDto Country { get; set; }
     }
 }

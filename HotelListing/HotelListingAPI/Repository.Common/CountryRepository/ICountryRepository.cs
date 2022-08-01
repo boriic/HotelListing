@@ -1,6 +1,6 @@
 ﻿using HotelListingAPI.DAL.Entities;
 
-namespace HotelListingAPI.Repository.Common.CountryRepositories
+namespace HotelListingAPI.Repository.Common.CountryRepository
 {
     public interface ICountryRepository : IGenericRepository<Country>
     {

@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using HotelListingAPI.API.Models.Country;
 using HotelListingAPI.API.Models.Hotel;
+using HotelListingAPI.Auth.Models;
 using HotelListingAPI.DAL.Entities;
 
 namespace HotelListingAPI.API.Configurations
@@ -16,6 +17,8 @@ namespace HotelListingAPI.API.Configurations
             CreateMap<Hotel, HotelDto>().ReverseMap();
             CreateMap<Hotel, HotelGetUpdateDto>().ReverseMap();
             CreateMap<Hotel, HotelCreateDto>().ReverseMap();
+
+            CreateMap<User, UserDto>().ReverseMap();
         }
     }
 }

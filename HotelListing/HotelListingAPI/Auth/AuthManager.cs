@@ -63,13 +63,8 @@ namespace HotelListingAPI.Auth
 
             if (isValidRefreshToken)
             {
-                var token = await GenerateToken();
-                return new AuthResponseDto
-                {
-                    Token = token,
-                    UserId = _user.Id,
-                    RefreshToken = await CreateRefreshToken()
-                };
+                var response = await GenerateToken();
+                return response;
             }
 
             await _userManager.UpdateSecurityStampAsync(_user);
@@ -88,14 +83,9 @@ namespace HotelListingAPI.Auth
                 return null;
             }
 
-            var token = await GenerateToken();
+            var response = await GenerateToken();
 
-            return new AuthResponseDto
-            {
-                Token = token,
-                UserId = _user.Id,
-                RefreshToken = await CreateRefreshToken()
-            };
+            return response;
         }
 
         public async Task<IEnumerable<IdentityError>> Register(UserDto userDto)
@@ -114,7 +104,7 @@ namespace HotelListingAPI.Auth
             return result.Errors;
         }
 
-        private async Task<string> GenerateToken()
+        private async Task<AuthResponseDto> GenerateToken()
         {
             var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JwtSettings:Key"]));
 
@@ -140,7 +130,13 @@ namespace HotelListingAPI.Auth
                 signingCredentials: credentials
                 );
 
-            return new JwtSecurityTokenHandler().WriteToken(token);
+            var response = new AuthResponseDto
+            {
+                Token = new JwtSecurityTokenHandler().WriteToken(token),
+                UserId = _user.Id,
+                RefreshToken = await CreateRefreshToken()
+            };
+            return response;
         }
     }
 }

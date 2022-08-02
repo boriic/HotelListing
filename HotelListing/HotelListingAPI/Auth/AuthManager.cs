@@ -27,6 +27,10 @@ namespace HotelListingAPI.Auth
             _configuration = configuration;
         }
 
+        /// <summary>
+        /// Method creates refresh token for a user
+        /// </summary>
+        /// <returns>Newly created refresh token</returns>
         public async Task<string> CreateRefreshToken()
         {
             await _userManager.RemoveAuthenticationTokenAsync(_user, "HotelListingApi", "RefreshToken");
@@ -39,6 +43,11 @@ namespace HotelListingAPI.Auth
 
         }
 
+        /// <summary>
+        /// Method verifies the refresh token if it is valid and creates new token
+        /// </summary>
+        /// <param name="request">AuthResponseDto object</param>
+        /// <returns>AuthResponse object</returns>
         public async Task<AuthResponseDto> VerifyRefreshToken(AuthResponseDto request)
         {
 
@@ -72,6 +81,11 @@ namespace HotelListingAPI.Auth
             return null;
         }
 
+        /// <summary>
+        /// Method verifies if the password matches the user and returns auth response with token and refresh token
+        /// </summary>
+        /// <param name="loginDto">LoginDto object</param>
+        /// <returns>AuthResponse object</returns>
         public async Task<AuthResponseDto> Login(LoginDto loginDto)
         {
             _user = await _userManager.FindByEmailAsync(loginDto.Email);
@@ -88,6 +102,11 @@ namespace HotelListingAPI.Auth
             return response;
         }
 
+        /// <summary>
+        /// Method registers new user and adds user role
+        /// </summary>
+        /// <param name="userDto">UserDto object</param>
+        /// <returns>Error if any</returns>
         public async Task<IEnumerable<IdentityError>> Register(UserDto userDto)
         {
             _user = _mapper.Map<User>(userDto);
@@ -104,6 +123,10 @@ namespace HotelListingAPI.Auth
             return result.Errors;
         }
 
+        /// <summary>
+        /// Method generates new token for a user if the login is successful
+        /// </summary>
+        /// <returns>AuthResponse object</returns>
         private async Task<AuthResponseDto> GenerateToken()
         {
             var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JwtSettings:Key"]));

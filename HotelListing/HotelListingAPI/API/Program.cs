@@ -22,7 +22,9 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddIdentityCore<User>()
     .AddRoles<IdentityRole>()
-    .AddEntityFrameworkStores<HotelListingDbContext>();
+    .AddTokenProvider<DataProtectorTokenProvider<User>>("HotelListingApi")
+    .AddEntityFrameworkStores<HotelListingDbContext>()
+    .AddDefaultTokenProviders();
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -84,6 +86,8 @@ if (app.Environment.IsDevelopment())
 app.UseCors("AllowAll");
 
 app.UseHttpsRedirection();
+
+app.UseAuthentication();
 
 app.UseAuthorization();
 

@@ -4,6 +4,7 @@ using HotelListingAPI.DAL.Entities;
 using AutoMapper;
 using HotelListingAPI.API.Models.Country;
 using HotelListingAPI.Repository.Common.CountryRepository;
+using Microsoft.AspNetCore.Authorization;
 
 namespace HotelListingAPI.API.Controllers
 {
@@ -56,6 +57,7 @@ namespace HotelListingAPI.API.Controllers
 
         // PUT: api/Country/5
         [HttpPut("{id}")]
+        [Authorize]
         public async Task<IActionResult> PutCountry(int id, CountryGetUpdateDto updateCountryDto)
         {
             if (id != updateCountryDto.Id)
@@ -93,6 +95,7 @@ namespace HotelListingAPI.API.Controllers
 
         // POST: api/Country
         [HttpPost]
+        [Authorize]
         public async Task<ActionResult<Country>> PostCountry(CountryCreateDto createCountry)
         {
             if (await _countryRepository.GetAllAsync() == null)
@@ -108,6 +111,7 @@ namespace HotelListingAPI.API.Controllers
 
         // DELETE: api/Country/5
         [HttpDelete("{id}")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteCountry(int id)
         {
             if (await _countryRepository.GetAllAsync() == null)

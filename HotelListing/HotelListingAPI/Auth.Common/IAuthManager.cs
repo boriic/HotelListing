@@ -6,7 +6,8 @@ namespace HotelListingAPI.Auth.Common
     public interface IAuthManager
     {
         Task<IEnumerable<IdentityError>> Register(UserDto userDto);
-        Task<bool> Login(LoginDto loginDto);
-
+        Task<AuthResponseDto> Login(LoginDto loginDto);
+        Task<string> CreateRefreshToken();
+        Task<AuthResponseDto> VerifyRefreshToken(AuthResponseDto request);
     }
 }

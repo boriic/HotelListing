@@ -8,9 +8,12 @@ namespace HotelListingAPI.Repository.HotelRepository
     public class HotelRepository : GenericRepository<Hotel>, IHotelRepository
     {
         private readonly HotelListingDbContext _context;
-        public HotelRepository(HotelListingDbContext context) : base(context)
+        private readonly ILogger<HotelRepository> _logger;
+
+        public HotelRepository(HotelListingDbContext context, ILogger<HotelRepository> logger) : base(context, logger)
         {
             _context = context;
+            _logger = logger;
         }
 
         public async Task<Hotel> GetDetails(int id)

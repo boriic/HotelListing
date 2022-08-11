@@ -11,6 +11,7 @@ using HotelListingAPI.Repository.Common.HotelRepository;
 using AutoMapper;
 using HotelListingAPI.API.Models.Hotel;
 using Microsoft.AspNetCore.Authorization;
+using HotelListingAPI.CustomExceptionMiddleware.CustomExceptions;
 
 namespace HotelListingAPI.API.Controllers
 {
@@ -21,41 +22,43 @@ namespace HotelListingAPI.API.Controllers
     public class HotelController : ControllerBase
     {
         private readonly IHotelRepository _hotelRepository;
+        private readonly ILogger<HotelController> _logger;
         private IMapper _mapper;
 
-        public HotelController(IMapper mapper, IHotelRepository hotelRepository)
+        public HotelController(IMapper mapper, IHotelRepository hotelRepository, ILogger<HotelController> logger)
         {
             _mapper = mapper;
             _hotelRepository = hotelRepository;
+            _logger = logger;
         }
 
         // GET: api/Hotel
         [HttpGet]
         public async Task<ActionResult<IEnumerable<HotelGetUpdateDto>>> GetHotels()
         {
-            var hotel = _mapper.Map<List<HotelGetUpdateDto>>(await _hotelRepository.GetAllAsync());
+            _logger.LogInformation("(Controller) Trying to fetch all the hotels");
 
-            if (hotel == null)
+            var hotels = _mapper.Map<List<HotelGetUpdateDto>>(await _hotelRepository.GetAllAsync());
+
+            if (hotels == null)
             {
-                return NotFound();
+                throw new NotFoundException("No hotels found");
             }
 
-            return hotel;
+            return hotels;
         }
 
         // GET: api/Hotel/5
         [HttpGet("{id}")]
         public async Task<ActionResult<HotelDto>> GetHotel(int id)
         {
-            if (await _hotelRepository.GetAllAsync() == null)
-            {
-                return NotFound();
-            }
+            _logger.LogInformation($"(Controller) Fetching hotel with id ({id})");
+
             var hotel = _mapper.Map<HotelDto>(await _hotelRepository.GetDetails(id));
 
             if (hotel == null)
             {
-                return NotFound();
+                throw new NotFoundException(nameof(GetHotel), id);
             }
 
             return hotel;
@@ -66,30 +69,26 @@ namespace HotelListingAPI.API.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> PutHotel(int id, HotelGetUpdateDto hotelDto)
         {
+            _logger.LogInformation($"Trying to update the hotel with id ({id})");
+
+            if (!ModelState.IsValid)
+                throw new BadHttpRequestException($"(Controller) Object is not valid");
+
             if (id != hotelDto.Id)
             {
-                return BadRequest();
+                throw new BadHttpRequestException("Invalid id");
             }
 
             var hotel = await _hotelRepository.GetAsync(id);
 
+            if (hotel == null)
+            {
+                throw new NotFoundException(nameof(PutHotel), hotelDto.Id);
+            }
+
             _mapper.Map(hotelDto, hotel);
 
-            try
-            {
-                await _hotelRepository.UpdateAsync(hotel);
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!await HotelExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
+            await _hotelRepository.UpdateAsync(hotel);
 
             return NoContent();
         }
@@ -99,6 +98,16 @@ namespace HotelListingAPI.API.Controllers
         [HttpPost]
         public async Task<ActionResult<Hotel>> PostHotel(HotelCreateDto hotelDto)
         {
+            _logger.LogInformation($"(Controller) Trying to create hotel");
+
+            if (!ModelState.IsValid)
+                throw new BadHttpRequestException($"Object is not valid");
+
+            if (await _hotelRepository.FindBy(x => x.Name == hotelDto.Name) != null)
+            {
+                throw new ArgumentException($"Hotel with name: {hotelDto.Name}, already exists");
+            }
+
             var hotel = _mapper.Map<Hotel>(hotelDto);
 
             await _hotelRepository.AddAsync(hotel);
@@ -110,21 +119,18 @@ namespace HotelListingAPI.API.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteHotel(int id)
         {
+            _logger.LogInformation($"(Controller) Trying to delete hotel with id ({id})");
+
             var hotel = await _hotelRepository.GetAsync(id);
 
             if (hotel == null)
             {
-                return NotFound();
+                throw new NotFoundException(nameof(DeleteHotel), id);
             }
 
             await _hotelRepository.DeleteAsync(id);
 
             return NoContent();
-        }
-
-        private async Task<bool> HotelExists(int id)
-        {
-            return await _hotelRepository.Exists(id);
         }
     }
 }

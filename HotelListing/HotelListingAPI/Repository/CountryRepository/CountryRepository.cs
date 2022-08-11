@@ -8,10 +8,12 @@ namespace HotelListingAPI.Repository.CountryRepository
     public class CountryRepository : GenericRepository<Country>, ICountryRepository
     {
         private readonly HotelListingDbContext _context;
+        private readonly ILogger<CountryRepository> _logger;
 
-        public CountryRepository(HotelListingDbContext context) : base(context)
+        public CountryRepository(HotelListingDbContext context, ILogger<CountryRepository> logger) : base(context, logger)
         {
             _context = context;
+            _logger = logger;
         }
 
         public async Task<bool> Exists(string name)

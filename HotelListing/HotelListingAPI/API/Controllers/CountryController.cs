@@ -6,6 +6,7 @@ using HotelListingAPI.API.Models.Country;
 using HotelListingAPI.Repository.Common.CountryRepository;
 using Microsoft.AspNetCore.Authorization;
 using HotelListingAPI.CustomExceptionMiddleware.CustomExceptions;
+using System.Linq.Expressions;
 
 namespace HotelListingAPI.API.Controllers
 {
@@ -15,18 +16,21 @@ namespace HotelListingAPI.API.Controllers
     public class CountryController : ControllerBase
     {
         private readonly ICountryRepository _countryRepository;
+        private readonly ILogger<CountryController> _logger;
         private IMapper _mapper;
 
-        public CountryController(IMapper mapper, ICountryRepository countryRepository)
+        public CountryController(IMapper mapper, ICountryRepository countryRepository, ILogger<CountryController> logger)
         {
             _mapper = mapper;
             _countryRepository = countryRepository;
+            _logger = logger;
         }
 
         // GET: api/Country
         [HttpGet]
         public async Task<ActionResult<IEnumerable<CountryGetUpdateDto>>> GetCountries()
         {
+            _logger.LogInformation("(Controller) Trying to fetch all the countries (Controller)");
 
             var countries = _mapper.Map<List<CountryGetUpdateDto>>(await _countryRepository.GetAllAsync());
 
@@ -42,6 +46,8 @@ namespace HotelListingAPI.API.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<CountryDto>> GetCountry(int id)
         {
+            _logger.LogInformation($"(Controller) Fetching country with id ({id})");
+
             var country = _mapper.Map<CountryDto>(await _countryRepository.GetDetailsAsync(id));
 
             if (country == null)
@@ -57,6 +63,10 @@ namespace HotelListingAPI.API.Controllers
         [Authorize]
         public async Task<IActionResult> PutCountry(int id, CountryGetUpdateDto updateCountryDto)
         {
+            _logger.LogInformation($"(Controller) Trying to update the country with id ({id})");
+
+            throw new BadHttpRequestException($"Object is not valid");
+
             if (id != updateCountryDto.Id)
             {
                 throw new BadHttpRequestException("Invalid id");
@@ -81,9 +91,13 @@ namespace HotelListingAPI.API.Controllers
         [Authorize]
         public async Task<ActionResult<Country>> PostCountry(CountryCreateDto createCountry)
         {
-            if (await CountryExists(createCountry.Name))
+            _logger.LogInformation($"(Controller) Trying to create country");
+
+            throw new BadHttpRequestException($"Object is not valid");
+
+            if (await _countryRepository.FindBy(x => x.Name == createCountry.Name) != null)
             {
-                throw new ArgumentException("Country with that name already exists");
+                throw new ArgumentException($"Country with name: {createCountry.Name}, already exists");
             }
 
             var country = _mapper.Map<Country>(createCountry);
@@ -98,6 +112,8 @@ namespace HotelListingAPI.API.Controllers
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteCountry(int id)
         {
+            _logger.LogInformation($"(Controller) Trying to delete country with id ({id})");
+
             var country = await _countryRepository.GetAsync(id);
 
             if (country == null)
@@ -108,16 +124,6 @@ namespace HotelListingAPI.API.Controllers
             await _countryRepository.DeleteAsync(id);
 
             return NoContent();
-        }
-
-        private async Task<bool> CountryExists(int id)
-        {
-            return await _countryRepository.Exists(id);
-        }
-
-        private async Task<bool> CountryExists(string name)
-        {
-            return await _countryRepository.Exists(name);
         }
     }
 }

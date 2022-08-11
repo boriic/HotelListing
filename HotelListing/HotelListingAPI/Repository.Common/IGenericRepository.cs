@@ -1,4 +1,6 @@
-﻿namespace HotelListingAPI.Repository.Common
+﻿using System.Linq.Expressions;
+
+namespace HotelListingAPI.Repository.Common
 {
     public interface IGenericRepository<T> where T : class
     {
@@ -8,5 +10,6 @@
         Task DeleteAsync(int id);
         Task UpdateAsync (T entity);
         Task<bool> Exists(int id);
+        Task<T> FindBy(Expression<Func<T, bool>> predicate);
     }
 }

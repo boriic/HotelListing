@@ -9,8 +9,9 @@ using HotelListingAPI.CustomExceptionMiddleware.CustomExceptions;
 
 namespace HotelListingAPI.API.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/v{version:apiVersion}/[controller]")]
     [ApiController]
+    [ApiVersion("1.0")]
     public class CountryController : ControllerBase
     {
         private readonly ICountryRepository _countryRepository;
@@ -65,22 +66,12 @@ namespace HotelListingAPI.API.Controllers
 
             if (country == null)
             {
-                return NotFound();
+                throw new NotFoundException(nameof(PutCountry), updateCountryDto.Id);
             }
 
             _mapper.Map(updateCountryDto, country);
 
-            try
-            {
-                await _countryRepository.UpdateAsync(country);
-            }
-            catch (Exception)
-            {
-                if (!await CountryExists(id))
-                {
-                    throw new NotFoundException(nameof(PutCountry), updateCountryDto.Id);
-                }
-            }
+            await _countryRepository.UpdateAsync(country);
 
             return NoContent();
         }
@@ -90,7 +81,7 @@ namespace HotelListingAPI.API.Controllers
         [Authorize]
         public async Task<ActionResult<Country>> PostCountry(CountryCreateDto createCountry)
         {
-            if(await CountryExists(createCountry.Name))
+            if (await CountryExists(createCountry.Name))
             {
                 throw new ArgumentException("Country with that name already exists");
             }

@@ -14,9 +14,10 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace HotelListingAPI.API.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/v{version:apiVersion}/[controller]")]
     [ApiController]
     [Authorize]
+    [ApiVersion("1.0")]
     public class HotelController : ControllerBase
     {
         private readonly IHotelRepository _hotelRepository;

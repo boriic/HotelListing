@@ -3,6 +3,7 @@ using HotelListingAPI.Auth;
 using HotelListingAPI.Auth.Common;
 using HotelListingAPI.DAL.Context;
 using HotelListingAPI.DAL.Entities;
+using HotelListingAPI.CustomExceptionMiddleware;
 using HotelListingAPI.Repository;
 using HotelListingAPI.Repository.Common;
 using HotelListingAPI.Repository.Common.CountryRepository;
@@ -82,6 +83,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.UseMiddleware<ExceptionMiddleware>();
 
 app.UseCors("AllowAll");
 

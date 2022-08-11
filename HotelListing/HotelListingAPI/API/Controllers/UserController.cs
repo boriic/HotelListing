@@ -27,26 +27,18 @@ namespace HotelListingAPI.API.Controllers
         public async Task<ActionResult> Register([FromBody] UserDto userDto)
         {
             _logger.LogInformation($"Registration attempt for {userDto.Email}");
-            try
-            {
-                var errors = await _authManager.Register(userDto);
+            var errors = await _authManager.Register(userDto);
 
-                if (errors.Any())
+            if (errors.Any())
+            {
+                foreach (var error in errors)
                 {
-                    foreach (var error in errors)
-                    {
-                        ModelState.AddModelError(error.Code, error.Description);
-                    }
-                    return BadRequest(ModelState);
+                    ModelState.AddModelError(error.Code, error.Description);
                 }
+                return BadRequest(ModelState);
+            }
 
-                return Ok();
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, $"Something went wrong in the {nameof(Register)} - Registration attempt for {userDto.Email}");
-                return Problem($"Something went wrong in the {nameof(Register)}. Please contact support", statusCode: 500);
-            }
+            return Ok();
         }
 
 
@@ -59,23 +51,14 @@ namespace HotelListingAPI.API.Controllers
         public async Task<ActionResult> Login([FromBody] LoginDto loginDto)
         {
             _logger.LogInformation($"Login attempt for {loginDto.Email}");
-            try
-            {
-                var authResponse = await _authManager.Login(loginDto);
+            var authResponse = await _authManager.Login(loginDto);
 
-                if (authResponse == null)
-                {
-                    return Unauthorized();
-                }
-
-                return Ok(authResponse);
-            }
-            catch (Exception ex)
+            if (authResponse == null)
             {
-                _logger.LogError(ex, $"Something went wrong in the {nameof(Login)}");
-                return Problem($"Something went wrong in the {nameof(Login)}. Please contact support", statusCode: 500);
+                return Unauthorized();
             }
 
+            return Ok(authResponse);
         }
 
         // POST: api/Account/refreshtoken

@@ -32,10 +32,6 @@ namespace HotelListingAPI.API.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<HotelGetUpdateDto>>> GetHotels()
         {
-            if (await _hotelRepository.GetAllAsync() == null)
-            {
-                return NotFound();
-            }
             var hotel = _mapper.Map<List<HotelGetUpdateDto>>(await _hotelRepository.GetAllAsync());
 
             if (hotel == null)
@@ -102,11 +98,6 @@ namespace HotelListingAPI.API.Controllers
         [HttpPost]
         public async Task<ActionResult<Hotel>> PostHotel(HotelCreateDto hotelDto)
         {
-            if (await _hotelRepository.GetAllAsync() == null)
-            {
-                return Problem("Entity set 'HotelListingDbContext.Hotels'  is null.");
-            }
-
             var hotel = _mapper.Map<Hotel>(hotelDto);
 
             await _hotelRepository.AddAsync(hotel);
@@ -118,10 +109,6 @@ namespace HotelListingAPI.API.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteHotel(int id)
         {
-            if (await _hotelRepository.GetAllAsync() == null)
-            {
-                return NotFound();
-            }
             var hotel = await _hotelRepository.GetAsync(id);
 
             if (hotel == null)

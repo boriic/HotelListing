@@ -4,6 +4,8 @@ namespace HotelListingAPI.Repository.Common.CountryRepository
 {
     public interface ICountryRepository : IGenericRepository<Country>
     {
-        Task<Country> GetDetails(int id);    
+        Task<Country> GetDetailsAsync(int id);  
+        Task<Country> GetByNameAsync(string name);
+        Task<bool> Exists(string name);    
     }
 }

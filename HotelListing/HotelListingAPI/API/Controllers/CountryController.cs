@@ -5,6 +5,7 @@ using AutoMapper;
 using HotelListingAPI.API.Models.Country;
 using HotelListingAPI.Repository.Common.CountryRepository;
 using Microsoft.AspNetCore.Authorization;
+using HotelListingAPI.CustomExceptionMiddleware.CustomExceptions;
 
 namespace HotelListingAPI.API.Controllers
 {
@@ -30,7 +31,7 @@ namespace HotelListingAPI.API.Controllers
 
             if (countries == null)
             {
-                return NotFound();
+                throw new NotFoundException("No countries found");
             }
 
             return countries;
@@ -40,16 +41,11 @@ namespace HotelListingAPI.API.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<CountryDto>> GetCountry(int id)
         {
-            if (await _countryRepository.GetAllAsync() == null)
-            {
-                return NotFound();
-            }
-
-            var country = _mapper.Map<CountryDto>(await _countryRepository.GetDetails(id));
+            var country = _mapper.Map<CountryDto>(await _countryRepository.GetDetailsAsync(id));
 
             if (country == null)
             {
-                return NotFound();
+                throw new NotFoundException(nameof(GetCountry), id);
             }
 
             return country;
@@ -62,7 +58,7 @@ namespace HotelListingAPI.API.Controllers
         {
             if (id != updateCountryDto.Id)
             {
-                return BadRequest("Invalid id");
+                throw new BadHttpRequestException("Invalid id");
             }
 
             var country = await _countryRepository.GetAsync(id);
@@ -78,15 +74,11 @@ namespace HotelListingAPI.API.Controllers
             {
                 await _countryRepository.UpdateAsync(country);
             }
-            catch (DbUpdateConcurrencyException)
+            catch (Exception)
             {
                 if (!await CountryExists(id))
                 {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
+                    throw new NotFoundException(nameof(PutCountry), updateCountryDto.Id);
                 }
             }
 
@@ -98,10 +90,11 @@ namespace HotelListingAPI.API.Controllers
         [Authorize]
         public async Task<ActionResult<Country>> PostCountry(CountryCreateDto createCountry)
         {
-            if (await _countryRepository.GetAllAsync() == null)
+            if(await CountryExists(createCountry.Name))
             {
-                return Problem("Entity set 'HotelListingDbContext.Countries'  is null.");
+                throw new ArgumentException("Country with that name already exists");
             }
+
             var country = _mapper.Map<Country>(createCountry);
 
             await _countryRepository.AddAsync(country);
@@ -114,15 +107,11 @@ namespace HotelListingAPI.API.Controllers
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteCountry(int id)
         {
-            if (await _countryRepository.GetAllAsync() == null)
-            {
-                return NotFound();
-            }
             var country = await _countryRepository.GetAsync(id);
 
             if (country == null)
             {
-                return NotFound();
+                throw new NotFoundException(nameof(DeleteCountry), id);
             }
 
             await _countryRepository.DeleteAsync(id);
@@ -133,6 +122,11 @@ namespace HotelListingAPI.API.Controllers
         private async Task<bool> CountryExists(int id)
         {
             return await _countryRepository.Exists(id);
+        }
+
+        private async Task<bool> CountryExists(string name)
+        {
+            return await _countryRepository.Exists(name);
         }
     }
 }

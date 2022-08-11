@@ -14,7 +14,19 @@ namespace HotelListingAPI.Repository.CountryRepository
             _context = context;
         }
 
-        public async Task<Country> GetDetails(int id)
+        public async Task<bool> Exists(string name)
+        {
+            var entity = await GetByNameAsync(name);
+
+            return entity != null;
+        }
+
+        public async Task<Country> GetByNameAsync(string name)
+        {
+            return await _context.Countries.FirstOrDefaultAsync(x => x.Name == name);
+        }
+
+        public async Task<Country> GetDetailsAsync(int id)
         {
             return await _context.Countries.Include(x => x.Hotels).FirstOrDefaultAsync(x => x.Id == id);
         }

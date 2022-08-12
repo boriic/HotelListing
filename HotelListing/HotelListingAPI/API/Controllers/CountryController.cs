@@ -7,6 +7,7 @@ using HotelListingAPI.Repository.Common.CountryRepository;
 using Microsoft.AspNetCore.Authorization;
 using HotelListingAPI.CustomExceptionMiddleware.CustomExceptions;
 using System.Linq.Expressions;
+using HotelListingAPI.API.Models;
 
 namespace HotelListingAPI.API.Controllers
 {
@@ -27,10 +28,10 @@ namespace HotelListingAPI.API.Controllers
         }
 
         // GET: api/Country
-        [HttpGet]
+        [HttpGet("GetAll")]
         public async Task<ActionResult<IEnumerable<CountryGetUpdateDto>>> GetCountries()
         {
-            _logger.LogInformation("(Controller) Trying to fetch all the countries (Controller)");
+            _logger.LogInformation("(Controller) Trying to fetch all the countries");
 
             var countries = _mapper.Map<List<CountryGetUpdateDto>>(await _countryRepository.GetAllAsync());
 
@@ -40,6 +41,21 @@ namespace HotelListingAPI.API.Controllers
             }
 
             return countries;
+        }
+        // GET: api/Country/?StartIndex=0&PageSize=25&PageNumber=1
+        [HttpGet]
+        public async Task<PagedResult<CountryGetUpdateDto>> GetPagedCountries([FromQuery] QueryParameters queryParameters)
+        {
+            _logger.LogInformation("(Controller) Trying to fetch all the countries with query parameters");
+
+            var pagedCountriesResult = await _countryRepository.GetAllAsync<CountryGetUpdateDto>(queryParameters);
+
+            if (pagedCountriesResult == null)
+            {
+                throw new NotFoundException("No countries found");
+            }
+
+            return pagedCountriesResult;
         }
 
         // GET: api/Country/5

@@ -1,4 +1,5 @@
-﻿using System.Linq.Expressions;
+﻿using HotelListingAPI.API.Models;
+using System.Linq.Expressions;
 
 namespace HotelListingAPI.Repository.Common
 {
@@ -6,6 +7,7 @@ namespace HotelListingAPI.Repository.Common
     {
         Task<T> GetAsync(int? id);
         Task<List<T>> GetAllAsync();
+        Task<PagedResult<TResult>> GetAllAsync<TResult>(QueryParameters queryParameters);
         Task<T> AddAsync(T entity);
         Task DeleteAsync(int id);
         Task UpdateAsync (T entity);

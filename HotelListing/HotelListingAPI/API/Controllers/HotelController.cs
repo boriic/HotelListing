@@ -12,6 +12,7 @@ using AutoMapper;
 using HotelListingAPI.API.Models.Hotel;
 using Microsoft.AspNetCore.Authorization;
 using HotelListingAPI.CustomExceptionMiddleware.CustomExceptions;
+using HotelListingAPI.API.Models;
 
 namespace HotelListingAPI.API.Controllers
 {
@@ -32,8 +33,8 @@ namespace HotelListingAPI.API.Controllers
             _logger = logger;
         }
 
-        // GET: api/Hotel
-        [HttpGet]
+        // GET: api/Hotel/getall
+        [HttpGet("GetAll")]
         public async Task<ActionResult<IEnumerable<HotelGetUpdateDto>>> GetHotels()
         {
             _logger.LogInformation("(Controller) Trying to fetch all the hotels");
@@ -46,6 +47,22 @@ namespace HotelListingAPI.API.Controllers
             }
 
             return hotels;
+        }
+
+        // GET: api/Hotel/?StartIndex=0&PageSize=25&PageNumber=1
+        [HttpGet]
+        public async Task<PagedResult<HotelGetUpdateDto>> GetPagedHotels([FromQuery] QueryParameters queryParameters)
+        {
+            _logger.LogInformation("(Controller) Trying to fetch all the countries with query parameters");
+
+            var pagedHotelsResult = await _hotelRepository.GetAllAsync<HotelGetUpdateDto>(queryParameters);
+
+            if (pagedHotelsResult == null)
+            {
+                throw new NotFoundException("No hotels found");
+            }
+
+            return pagedHotelsResult;
         }
 
         // GET: api/Hotel/5

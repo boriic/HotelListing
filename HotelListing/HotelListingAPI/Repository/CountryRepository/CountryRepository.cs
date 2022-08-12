@@ -1,4 +1,5 @@
-﻿using HotelListingAPI.DAL.Context;
+﻿using AutoMapper;
+using HotelListingAPI.DAL.Context;
 using HotelListingAPI.DAL.Entities;
 using HotelListingAPI.Repository.Common.CountryRepository;
 using Microsoft.EntityFrameworkCore;
@@ -9,11 +10,13 @@ namespace HotelListingAPI.Repository.CountryRepository
     {
         private readonly HotelListingDbContext _context;
         private readonly ILogger<CountryRepository> _logger;
+        private readonly IMapper _mapper;
 
-        public CountryRepository(HotelListingDbContext context, ILogger<CountryRepository> logger) : base(context, logger)
+        public CountryRepository(HotelListingDbContext context, ILogger<CountryRepository> logger, IMapper mapper) : base(context, logger, mapper)
         {
             _context = context;
             _logger = logger;
+            _mapper = mapper;
         }
 
         public async Task<bool> Exists(string name)

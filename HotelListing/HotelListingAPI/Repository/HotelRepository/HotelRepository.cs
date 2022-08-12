@@ -1,4 +1,5 @@
-﻿using HotelListingAPI.DAL.Context;
+﻿using AutoMapper;
+using HotelListingAPI.DAL.Context;
 using HotelListingAPI.DAL.Entities;
 using HotelListingAPI.Repository.Common.HotelRepository;
 using Microsoft.EntityFrameworkCore;
@@ -9,11 +10,13 @@ namespace HotelListingAPI.Repository.HotelRepository
     {
         private readonly HotelListingDbContext _context;
         private readonly ILogger<HotelRepository> _logger;
+        private readonly IMapper _mapper;
 
-        public HotelRepository(HotelListingDbContext context, ILogger<HotelRepository> logger) : base(context, logger)
+        public HotelRepository(HotelListingDbContext context, ILogger<HotelRepository> logger, IMapper mapper) : base(context, logger, mapper)
         {
             _context = context;
             _logger = logger;
+            _mapper = mapper;
         }
 
         public async Task<Hotel> GetDetails(int id)

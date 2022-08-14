@@ -37,14 +37,9 @@ namespace HotelListingAPI.API.Controllers
         [HttpGet("GetAll")]
         public async Task<ActionResult<IEnumerable<HotelGetUpdateDto>>> GetHotels()
         {
-            _logger.LogInformation("(Controller) Trying to fetch all the hotels");
+            _logger.LogInformation($"(Controller) {nameof(GetHotels)}");
 
             var hotels = await _hotelRepository.GetAllAsync<HotelGetUpdateDto>();
-
-            if (hotels == null)
-            {
-                throw new NotFoundException("No hotels found");
-            }
 
             return hotels;
         }
@@ -53,14 +48,9 @@ namespace HotelListingAPI.API.Controllers
         [HttpGet]
         public async Task<PagedResult<HotelGetUpdateDto>> GetPagedHotels([FromQuery] QueryParameters queryParameters)
         {
-            _logger.LogInformation("(Controller) Trying to fetch all the countries with query parameters");
+            _logger.LogInformation($"(Controller) {nameof(GetPagedHotels)}");
 
             var pagedHotelsResult = await _hotelRepository.GetAllAsync<HotelGetUpdateDto>(queryParameters);
-
-            if (pagedHotelsResult == null)
-            {
-                throw new NotFoundException("No hotels found");
-            }
 
             return pagedHotelsResult;
         }
@@ -69,14 +59,9 @@ namespace HotelListingAPI.API.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<HotelDto>> GetHotel(int id)
         {
-            _logger.LogInformation($"(Controller) Fetching hotel with id ({id})");
+            _logger.LogInformation($"(Controller) {nameof(GetHotel)} ({id})");
 
             var hotel = await _hotelRepository.GetDetails(id);
-
-            if (hotel == null)
-            {
-                throw new NotFoundException(nameof(GetHotel), id);
-            }
 
             return hotel;
         }
@@ -86,7 +71,7 @@ namespace HotelListingAPI.API.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> PutHotel(int id, HotelGetUpdateDto hotelDto)
         {
-            _logger.LogInformation($"Trying to update the hotel with id ({id})");
+            _logger.LogInformation($"(Controller) {nameof(PutHotel)} ({id})");
 
             if (id != hotelDto.Id)
             {
@@ -94,11 +79,6 @@ namespace HotelListingAPI.API.Controllers
             }
 
             var hotel = await _hotelRepository.GetAsync<HotelGetUpdateDto>(id);
-
-            if (hotel == null)
-            {
-                throw new NotFoundException(nameof(PutHotel), hotelDto.Id);
-            }
 
             await _hotelRepository.UpdateAsync(id, hotelDto);
 
@@ -110,7 +90,7 @@ namespace HotelListingAPI.API.Controllers
         [HttpPost]
         public async Task<ActionResult<HotelCreateDto>> PostHotel(HotelCreateDto hotelDto)
         {
-            _logger.LogInformation($"(Controller) Trying to create hotel");
+            _logger.LogInformation($"(Controller) {nameof(PostHotel)}");
 
             //add this to service later as a method that finds hotel by name?
             if (await _hotelRepository.FindBy(x => x.Name == hotelDto.Name) != null)
@@ -127,7 +107,7 @@ namespace HotelListingAPI.API.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteHotel(int id)
         {
-            _logger.LogInformation($"(Controller) Trying to delete hotel with id ({id})");
+            _logger.LogInformation($"(Controller) {nameof(DeleteHotel)} ({id})");
 
             var hotel = await _hotelRepository.GetAsync<HotelDto>(id);
 

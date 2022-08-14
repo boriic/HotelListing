@@ -27,6 +27,7 @@ namespace HotelListingAPI.Repository.HotelRepository
             var hotel = await _context.Hotels.Include(x => x.Country)
                 .ProjectTo<HotelDto>(_mapper.ConfigurationProvider)
                 .FirstOrDefaultAsync(x => x.Id == id);
+
             if (hotel == null)
                 throw new NotFoundException(nameof(GetDetails), id);
 

@@ -93,6 +93,9 @@ namespace HotelListingAPI.Repository
 
             var entity = await _context.Set<T>().FindAsync(id);
 
+            if (entity == null)
+                throw new NotFoundException(typeof(T).Name, id);
+
             return _mapper.Map<TResult>(entity);
         }
 
@@ -101,9 +104,14 @@ namespace HotelListingAPI.Repository
             _logger.LogInformation($"(Repository) {nameof(GetAsync)}");
 
             if (id == null)
+                throw new NotFoundException(typeof(T).Name, id.HasValue ? id : "No Key Provided");
+
+            var entity = await _context.Set<T>().FindAsync(id);
+
+            if (entity == null)
                 throw new NotFoundException(typeof(T).Name, id);
 
-            return await _context.Set<T>().FindAsync(id);
+            return entity;
         }
 
         public async Task<T> FindBy(Expression<Func<T, bool>> predicate)

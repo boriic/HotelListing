@@ -24,7 +24,7 @@ namespace HotelListingAPI.CustomExceptionMiddleware
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, $"Something went wrong while processing {context.Request.Path}");
+                _logger.LogError(ex, $"Something went wrong while processing {context.Request.Path}. Method: {context.Request.Method}");
                 await HandleExceptionAsync(context, ex);
             }
         }

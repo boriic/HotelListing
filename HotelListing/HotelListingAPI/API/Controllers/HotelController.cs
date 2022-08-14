@@ -88,9 +88,6 @@ namespace HotelListingAPI.API.Controllers
         {
             _logger.LogInformation($"Trying to update the hotel with id ({id})");
 
-            if (!ModelState.IsValid)
-                throw new BadHttpRequestException($"(Controller) Object is not valid");
-
             if (id != hotelDto.Id)
             {
                 throw new BadHttpRequestException("Invalid id");
@@ -116,9 +113,6 @@ namespace HotelListingAPI.API.Controllers
         public async Task<ActionResult<Hotel>> PostHotel(HotelCreateDto hotelDto)
         {
             _logger.LogInformation($"(Controller) Trying to create hotel");
-
-            if (!ModelState.IsValid)
-                throw new BadHttpRequestException($"Object is not valid");
 
             if (await _hotelRepository.FindBy(x => x.Name == hotelDto.Name) != null)
             {

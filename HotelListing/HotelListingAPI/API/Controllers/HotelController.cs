@@ -109,12 +109,7 @@ namespace HotelListingAPI.API.Controllers
         {
             _logger.LogInformation($"(Controller) {nameof(DeleteHotel)} ({id})");
 
-            var hotel = await _hotelRepository.GetAsync<HotelDto>(id);
-
-            if (hotel == null)
-            {
-                throw new NotFoundException(nameof(DeleteHotel), id);
-            }
+            await _hotelRepository.GetAsync<HotelDto>(id);
 
             await _hotelRepository.DeleteAsync(id);
 

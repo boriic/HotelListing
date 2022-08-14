@@ -1,4 +1,7 @@
 ﻿using AutoMapper;
+using AutoMapper.QueryableExtensions;
+using HotelListingAPI.API.Models.Country;
+using HotelListingAPI.CustomExceptionMiddleware.CustomExceptions;
 using HotelListingAPI.DAL.Context;
 using HotelListingAPI.DAL.Entities;
 using HotelListingAPI.Repository.Common.CountryRepository;
@@ -31,9 +34,16 @@ namespace HotelListingAPI.Repository.CountryRepository
             return await _context.Countries.FirstOrDefaultAsync(x => x.Name == name);
         }
 
-        public async Task<Country> GetDetailsAsync(int id)
+        public async Task<CountryDto> GetDetailsAsync(int id)
         {
-            return await _context.Countries.Include(x => x.Hotels).FirstOrDefaultAsync(x => x.Id == id);
+            var country = await _context.Countries.Include(x => x.Hotels)
+                .ProjectTo<CountryDto>(_mapper.ConfigurationProvider)
+                .FirstOrDefaultAsync(x => x.Id == id);
+
+            if (country == null)
+                throw new NotFoundException(nameof(GetDetailsAsync), id);
+
+            return country;
         }
     }
 }

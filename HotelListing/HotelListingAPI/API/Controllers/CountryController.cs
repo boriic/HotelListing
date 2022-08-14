@@ -33,7 +33,7 @@ namespace HotelListingAPI.API.Controllers
         {
             _logger.LogInformation("(Controller) Trying to fetch all the countries");
 
-            var countries = _mapper.Map<List<CountryGetUpdateDto>>(await _countryRepository.GetAllAsync());
+            var countries = await _countryRepository.GetAllAsync<CountryGetUpdateDto>();
 
             if (countries == null)
             {
@@ -64,7 +64,7 @@ namespace HotelListingAPI.API.Controllers
         {
             _logger.LogInformation($"(Controller) Fetching country with id ({id})");
 
-            var country = _mapper.Map<CountryDto>(await _countryRepository.GetDetailsAsync(id));
+            var country = await _countryRepository.GetDetailsAsync(id);
 
             if (country == null)
             {
@@ -86,16 +86,14 @@ namespace HotelListingAPI.API.Controllers
                 throw new BadHttpRequestException("Invalid id");
             }
 
-            var country = await _countryRepository.GetAsync(id);
+            var country = await _countryRepository.GetAsync<CountryGetUpdateDto>(id);
 
             if (country == null)
             {
                 throw new NotFoundException(nameof(PutCountry), updateCountryDto.Id);
             }
 
-            _mapper.Map(updateCountryDto, country);
-
-            await _countryRepository.UpdateAsync(country);
+            await _countryRepository.UpdateAsync(id, country);
 
             return NoContent();
         }
@@ -103,20 +101,19 @@ namespace HotelListingAPI.API.Controllers
         // POST: api/Country
         [HttpPost]
         [Authorize]
-        public async Task<ActionResult<Country>> PostCountry(CountryCreateDto createCountry)
+        public async Task<ActionResult<CountryCreateDto>> PostCountry(CountryCreateDto createCountry)
         {
             _logger.LogInformation($"(Controller) Trying to create country");
 
+            //add this to service later as a method that finds country by name?
             if (await _countryRepository.FindBy(x => x.Name == createCountry.Name) != null)
             {
                 throw new ArgumentException($"Country with name: {createCountry.Name}, already exists");
             }
 
-            var country = _mapper.Map<Country>(createCountry);
+            var country = await _countryRepository.AddAsync<CountryCreateDto, Country>(createCountry);
 
-            await _countryRepository.AddAsync(country);
-
-            return CreatedAtAction("GetCountry", new { id = country.Id }, country);
+            return CreatedAtAction("GetCountry", new { id = country.Id }, createCountry);
         }
 
         // DELETE: api/Country/5
@@ -126,7 +123,7 @@ namespace HotelListingAPI.API.Controllers
         {
             _logger.LogInformation($"(Controller) Trying to delete country with id ({id})");
 
-            var country = await _countryRepository.GetAsync(id);
+            var country = await _countryRepository.GetAsync<CountryDto>(id);
 
             if (country == null)
             {

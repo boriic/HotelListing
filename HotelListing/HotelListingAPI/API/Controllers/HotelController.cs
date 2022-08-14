@@ -39,7 +39,7 @@ namespace HotelListingAPI.API.Controllers
         {
             _logger.LogInformation("(Controller) Trying to fetch all the hotels");
 
-            var hotels = _mapper.Map<List<HotelGetUpdateDto>>(await _hotelRepository.GetAllAsync());
+            var hotels = await _hotelRepository.GetAllAsync<HotelGetUpdateDto>();
 
             if (hotels == null)
             {
@@ -71,7 +71,7 @@ namespace HotelListingAPI.API.Controllers
         {
             _logger.LogInformation($"(Controller) Fetching hotel with id ({id})");
 
-            var hotel = _mapper.Map<HotelDto>(await _hotelRepository.GetDetails(id));
+            var hotel = await _hotelRepository.GetDetails(id);
 
             if (hotel == null)
             {
@@ -93,16 +93,14 @@ namespace HotelListingAPI.API.Controllers
                 throw new BadHttpRequestException("Invalid id");
             }
 
-            var hotel = await _hotelRepository.GetAsync(id);
+            var hotel = await _hotelRepository.GetAsync<HotelGetUpdateDto>(id);
 
             if (hotel == null)
             {
                 throw new NotFoundException(nameof(PutHotel), hotelDto.Id);
             }
 
-            _mapper.Map(hotelDto, hotel);
-
-            await _hotelRepository.UpdateAsync(hotel);
+            await _hotelRepository.UpdateAsync(id, hotelDto);
 
             return NoContent();
         }
@@ -110,20 +108,19 @@ namespace HotelListingAPI.API.Controllers
         // POST: api/Hotel
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Hotel>> PostHotel(HotelCreateDto hotelDto)
+        public async Task<ActionResult<HotelCreateDto>> PostHotel(HotelCreateDto hotelDto)
         {
             _logger.LogInformation($"(Controller) Trying to create hotel");
 
+            //add this to service later as a method that finds hotel by name?
             if (await _hotelRepository.FindBy(x => x.Name == hotelDto.Name) != null)
             {
                 throw new ArgumentException($"Hotel with name: {hotelDto.Name}, already exists");
             }
 
-            var hotel = _mapper.Map<Hotel>(hotelDto);
+            var hotel = await _hotelRepository.AddAsync<HotelCreateDto, Hotel>(hotelDto);
 
-            await _hotelRepository.AddAsync(hotel);
-
-            return CreatedAtAction("GetHotel", new { id = hotel.Id }, hotel);
+            return CreatedAtAction("GetHotel", new { id = hotel.Id }, hotelDto);
         }
 
         // DELETE: api/Hotel/5
@@ -132,7 +129,7 @@ namespace HotelListingAPI.API.Controllers
         {
             _logger.LogInformation($"(Controller) Trying to delete hotel with id ({id})");
 
-            var hotel = await _hotelRepository.GetAsync(id);
+            var hotel = await _hotelRepository.GetAsync<HotelDto>(id);
 
             if (hotel == null)
             {

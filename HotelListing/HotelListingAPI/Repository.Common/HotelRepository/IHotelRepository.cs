@@ -1,9 +1,10 @@
-﻿using HotelListingAPI.DAL.Entities;
+﻿using HotelListingAPI.API.Models.Hotel;
+using HotelListingAPI.DAL.Entities;
 
 namespace HotelListingAPI.Repository.Common.HotelRepository
 {
     public interface IHotelRepository : IGenericRepository<Hotel>
     {
-        Task<Hotel> GetDetails(int id);
+        Task<HotelDto> GetDetails(int id);
     }
 }

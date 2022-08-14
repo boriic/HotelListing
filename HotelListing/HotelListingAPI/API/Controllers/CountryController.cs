@@ -81,8 +81,6 @@ namespace HotelListingAPI.API.Controllers
         {
             _logger.LogInformation($"(Controller) Trying to update the country with id ({id})");
 
-            throw new BadHttpRequestException($"Object is not valid");
-
             if (id != updateCountryDto.Id)
             {
                 throw new BadHttpRequestException("Invalid id");
@@ -108,8 +106,6 @@ namespace HotelListingAPI.API.Controllers
         public async Task<ActionResult<Country>> PostCountry(CountryCreateDto createCountry)
         {
             _logger.LogInformation($"(Controller) Trying to create country");
-
-            throw new BadHttpRequestException($"Object is not valid");
 
             if (await _countryRepository.FindBy(x => x.Name == createCountry.Name) != null)
             {

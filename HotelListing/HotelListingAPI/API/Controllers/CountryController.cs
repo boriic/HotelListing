@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Authorization;
 using HotelListingAPI.CustomExceptionMiddleware.CustomExceptions;
 using System.Linq.Expressions;
 using HotelListingAPI.API.Models;
+using HotelListingAPI.Service.Common.CountryService;
 
 namespace HotelListingAPI.API.Controllers
 {
@@ -16,14 +17,12 @@ namespace HotelListingAPI.API.Controllers
     [ApiVersion("1.0")]
     public class CountryController : ControllerBase
     {
-        private readonly ICountryRepository _countryRepository;
+        private readonly ICountryService _countryService;
         private readonly ILogger<CountryController> _logger;
-        private IMapper _mapper;
 
-        public CountryController(IMapper mapper, ICountryRepository countryRepository, ILogger<CountryController> logger)
+        public CountryController(ICountryService countryService, ILogger<CountryController> logger)
         {
-            _mapper = mapper;
-            _countryRepository = countryRepository;
+            _countryService = countryService;
             _logger = logger;
         }
 
@@ -33,7 +32,7 @@ namespace HotelListingAPI.API.Controllers
         {
             _logger.LogInformation("(Controller) Trying to fetch all the countries");
 
-            var countries = await _countryRepository.GetAllAsync<CountryGetUpdateDto>();
+            var countries = await _countryService.GetAllAsync();
 
             return countries;
         }
@@ -43,7 +42,7 @@ namespace HotelListingAPI.API.Controllers
         {
             _logger.LogInformation("(Controller) Trying to fetch all the countries with query parameters");
 
-            var pagedCountriesResult = await _countryRepository.GetAllAsync<CountryGetUpdateDto>(queryParameters);
+            var pagedCountriesResult = await _countryService.GetAllAsync(queryParameters);
 
             return pagedCountriesResult;
         }
@@ -54,7 +53,7 @@ namespace HotelListingAPI.API.Controllers
         {
             _logger.LogInformation($"(Controller) Fetching country with id ({id})");
 
-            var country = await _countryRepository.GetDetailsAsync(id);
+            var country = await _countryService.GetDetailsAsync(id);
 
             return country;
         }
@@ -71,9 +70,7 @@ namespace HotelListingAPI.API.Controllers
                 throw new BadHttpRequestException("Invalid id");
             }
 
-            var country = await _countryRepository.GetAsync<CountryGetUpdateDto>(id);
-
-            await _countryRepository.UpdateAsync(id, country);
+            await _countryService.UpdateAsync(id, updateCountryDto);
 
             return NoContent();
         }
@@ -85,15 +82,14 @@ namespace HotelListingAPI.API.Controllers
         {
             _logger.LogInformation($"(Controller) Trying to create country");
 
-            //add this to service later as a method that finds country by name?
-            if (await _countryRepository.FindBy(x => x.Name == createCountry.Name) != null)
+            if (await _countryService.CountryExists(createCountry.Name))
             {
                 throw new ArgumentException($"Country with name: {createCountry.Name}, already exists");
             }
 
-            var country = await _countryRepository.AddAsync<CountryCreateDto, Country>(createCountry);
+            await _countryService.AddAsync(createCountry);
 
-            return CreatedAtAction("GetCountry", new { id = country.Id }, createCountry);
+            return Ok(createCountry);
         }
 
         // DELETE: api/Country/5
@@ -103,9 +99,7 @@ namespace HotelListingAPI.API.Controllers
         {
             _logger.LogInformation($"(Controller) Trying to delete country with id ({id})");
 
-            await _countryRepository.GetAsync<CountryDto>(id);
-
-            await _countryRepository.DeleteAsync(id);
+            await _countryService.DeleteAsync(id);
 
             return NoContent();
         }

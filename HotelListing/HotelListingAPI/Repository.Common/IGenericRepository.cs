@@ -8,7 +8,7 @@ namespace HotelListingAPI.Repository.Common
         Task<TResult> GetAsync<TResult>(int? id);
         Task<List<TResult>> GetAllAsync<TResult>();
         Task<PagedResult<TResult>> GetAllAsync<TResult>(QueryParameters queryParameters);
-        Task<TResult> AddAsync<TSource, TResult>(TSource source);
+        Task AddAsync<TSource, TResult>(TSource source);
         Task DeleteAsync(int id);
         Task UpdateAsync<TSource>(int id,TSource source);
         Task<bool> Exists(int id);

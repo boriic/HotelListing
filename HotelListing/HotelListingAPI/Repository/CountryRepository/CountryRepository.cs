@@ -22,20 +22,10 @@ namespace HotelListingAPI.Repository.CountryRepository
             _mapper = mapper;
         }
 
-        public async Task<bool> Exists(string name)
-        {
-            var entity = await GetByNameAsync(name);
-
-            return entity != null;
-        }
-
-        public async Task<Country> GetByNameAsync(string name)
-        {
-            return await _context.Countries.FirstOrDefaultAsync(x => x.Name == name);
-        }
-
         public async Task<CountryDto> GetDetailsAsync(int id)
         {
+            _logger.LogInformation($"(Repository) {nameof(GetDetailsAsync)} ({id})");
+
             var country = await _context.Countries.Include(x => x.Hotels)
                 .ProjectTo<CountryDto>(_mapper.ConfigurationProvider)
                 .FirstOrDefaultAsync(x => x.Id == id);

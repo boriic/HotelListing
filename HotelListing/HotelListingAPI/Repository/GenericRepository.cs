@@ -21,7 +21,7 @@ namespace HotelListingAPI.Repository
             _logger = logger;
             _mapper = mapper;
         }
-        public async Task<TResult> AddAsync<TSource, TResult>(TSource source)
+        public async Task AddAsync<TSource, TResult>(TSource source)
         {
             _logger.LogInformation($"(Repository) {nameof(AddAsync)}");
 
@@ -30,8 +30,6 @@ namespace HotelListingAPI.Repository
             await _context.AddAsync(entity);
 
             await _context.SaveChangesAsync();
-
-            return _mapper.Map<TResult>(entity);
         }
 
         public async Task DeleteAsync(int id)
@@ -53,6 +51,8 @@ namespace HotelListingAPI.Repository
 
         public async Task<bool> Exists(int id)
         {
+            _logger.LogInformation($"(Repository) {nameof(Exists)} ({id})");
+
             var entity = await GetAsync(id);
 
             return entity != null;
@@ -67,6 +67,8 @@ namespace HotelListingAPI.Repository
 
         public async Task<PagedResult<TResult>> GetAllAsync<TResult>(QueryParameters queryParameters)
         {
+            _logger.LogInformation($"(Repository) {nameof(GetAllAsync)} Paged");
+
             var totalSize = await _context.Set<T>().CountAsync();
 
             var items = await _context.Set<T>()

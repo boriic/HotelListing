@@ -18,6 +18,10 @@ using Serilog;
 using System.Text;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Versioning;
+using HotelListingAPI.Service.CountryService;
+using HotelListingAPI.Service.Common.CountryService;
+using HotelListingAPI.Service.Common.HotelService;
+using HotelListingAPI.Service.HotelService;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -71,10 +75,16 @@ builder.Host.UseSerilog((ctx, loggerConfig) => loggerConfig.WriteTo.Console().Re
 
 builder.Services.AddAutoMapper(typeof(MapperConfig));
 
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+
 builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
 builder.Services.AddScoped<ICountryRepository, CountryRepository>();
 builder.Services.AddScoped<IHotelRepository, HotelRepository>();
+
 builder.Services.AddScoped<IAuthManager, AuthManager>();
+
+builder.Services.AddScoped<ICountryService, CountryService>();
+builder.Services.AddScoped<IHotelService, HotelService>();
 
 builder.Services.AddAuthentication(options =>
 {

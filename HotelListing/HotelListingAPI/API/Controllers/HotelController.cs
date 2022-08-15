@@ -98,9 +98,9 @@ namespace HotelListingAPI.API.Controllers
                 throw new ArgumentException($"Hotel with name: {hotelDto.Name}, already exists");
             }
 
-            var hotel = await _hotelRepository.AddAsync<HotelCreateDto, Hotel>(hotelDto);
+            await _hotelRepository.AddAsync<HotelCreateDto, Hotel>(hotelDto);
 
-            return CreatedAtAction("GetHotel", new { id = hotel.Id }, hotelDto);
+            return Ok(hotelDto);
         }
 
         // DELETE: api/Hotel/5

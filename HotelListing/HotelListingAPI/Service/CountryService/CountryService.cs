@@ -3,7 +3,6 @@ using HotelListingAPI.API.Models.Country;
 using HotelListingAPI.DAL.Entities;
 using HotelListingAPI.Repository.Common;
 using HotelListingAPI.Service.Common.CountryService;
-using Microsoft.AspNetCore.Mvc;
 
 namespace HotelListingAPI.Service.CountryService
 {

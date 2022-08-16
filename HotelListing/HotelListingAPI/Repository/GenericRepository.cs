@@ -81,7 +81,7 @@ namespace HotelListingAPI.Repository
             {
                 Items = items,
                 PageNumber = queryParameters.PageNumber,
-                RecordNumber = queryParameters.PageSize,
+                PageSize = queryParameters.PageSize,
                 TotalCount = totalSize,
             };
         }
@@ -123,7 +123,7 @@ namespace HotelListingAPI.Repository
             return await _context.Set<T>().Where(predicate).FirstOrDefaultAsync();
         }
 
-        public async Task UpdateAsync<TSource>(int id ,TSource source)
+        public async Task UpdateAsync<TSource>(int id, TSource source)
         {
             _logger.LogInformation($"(Repository) {nameof(UpdateAsync)}");
 

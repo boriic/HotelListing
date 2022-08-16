@@ -1,12 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using HotelListingAPI.DAL.Entities;
-using AutoMapper;
 using HotelListingAPI.API.Models.Country;
-using HotelListingAPI.Repository.Common.CountryRepository;
 using Microsoft.AspNetCore.Authorization;
-using HotelListingAPI.CustomExceptionMiddleware.CustomExceptions;
-using System.Linq.Expressions;
 using HotelListingAPI.API.Models;
 using HotelListingAPI.Service.Common.CountryService;
 
@@ -26,7 +20,7 @@ namespace HotelListingAPI.API.Controllers
             _logger = logger;
         }
 
-        // GET: api/Country
+        // GET: api/v1.0/Country
         [HttpGet("GetAll")]
         public async Task<ActionResult<IEnumerable<CountryGetUpdateDto>>> GetCountries()
         {
@@ -36,7 +30,7 @@ namespace HotelListingAPI.API.Controllers
 
             return countries;
         }
-        // GET: api/Country/?StartIndex=0&PageSize=25&PageNumber=1
+        // GET: api/v1.0/Country/?StartIndex=0&PageSize=25&PageNumber=1
         [HttpGet]
         public async Task<PagedResult<CountryGetUpdateDto>> GetPagedCountries([FromQuery] QueryParameters queryParameters)
         {
@@ -47,7 +41,7 @@ namespace HotelListingAPI.API.Controllers
             return pagedCountriesResult;
         }
 
-        // GET: api/Country/5
+        // GET: api/v1.0/Country/5
         [HttpGet("{id}")]
         public async Task<ActionResult<CountryDto>> GetCountry(int id)
         {
@@ -58,7 +52,7 @@ namespace HotelListingAPI.API.Controllers
             return country;
         }
 
-        // PUT: api/Country/5
+        // PUT: api/v1.0/Country/5
         [HttpPut("{id}")]
         [Authorize]
         public async Task<IActionResult> PutCountry(int id, CountryGetUpdateDto updateCountryDto)
@@ -70,12 +64,17 @@ namespace HotelListingAPI.API.Controllers
                 throw new BadHttpRequestException("Invalid id");
             }
 
+            if (await _countryService.CountryExists(updateCountryDto.Name))
+            {
+                throw new ArgumentException($"Country with name: {updateCountryDto.Name}, already exists");
+            }
+
             await _countryService.UpdateAsync(id, updateCountryDto);
 
             return NoContent();
         }
 
-        // POST: api/Country
+        // POST: api/v1.0/Country
         [HttpPost]
         [Authorize]
         public async Task<ActionResult<CountryCreateDto>> PostCountry(CountryCreateDto createCountry)
@@ -92,7 +91,7 @@ namespace HotelListingAPI.API.Controllers
             return Ok(createCountry);
         }
 
-        // DELETE: api/Country/5
+        // DELETE: api/v1.0/Country/5
         [HttpDelete("{id}")]
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteCountry(int id)
@@ -103,7 +102,5 @@ namespace HotelListingAPI.API.Controllers
 
             return NoContent();
         }
-
-        //Contact me form endpoint
     }
 }

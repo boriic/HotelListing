@@ -22,14 +22,14 @@ namespace HotelListingAPI.Repository.HotelRepository
             _mapper = mapper;
         }
 
-        public async Task<HotelDto> GetDetails(int id)
+        public async Task<HotelDto> GetDetailsAsync(int id)
         {
             var hotel = await _context.Hotels.Include(x => x.Country)
                 .ProjectTo<HotelDto>(_mapper.ConfigurationProvider)
                 .FirstOrDefaultAsync(x => x.Id == id);
 
             if (hotel == null)
-                throw new NotFoundException(nameof(GetDetails), id);
+                throw new NotFoundException(nameof(GetDetailsAsync), id);
 
             return hotel;
         }

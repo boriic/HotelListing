@@ -5,6 +5,6 @@ namespace HotelListingAPI.Repository.Common.HotelRepository
 {
     public interface IHotelRepository : IGenericRepository<Hotel>
     {
-        Task<HotelDto> GetDetails(int id);
+        Task<HotelDto> GetDetailsAsync(int id);
     }
 }

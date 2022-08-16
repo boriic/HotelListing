@@ -22,6 +22,8 @@ using HotelListingAPI.Service.CountryService;
 using HotelListingAPI.Service.Common.CountryService;
 using HotelListingAPI.Service.Common.HotelService;
 using HotelListingAPI.Service.HotelService;
+using HotelListingAPI.Service.Common.HomeService;
+using HotelListingAPI.Service.HomeService;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -85,6 +87,7 @@ builder.Services.AddScoped<IAuthManager, AuthManager>();
 
 builder.Services.AddScoped<ICountryService, CountryService>();
 builder.Services.AddScoped<IHotelService, HotelService>();
+builder.Services.AddScoped<IHomeService, HomeService>();
 
 builder.Services.AddAuthentication(options =>
 {

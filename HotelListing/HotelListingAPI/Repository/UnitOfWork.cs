@@ -20,18 +20,12 @@ namespace HotelListingAPI.Repository
         public async Task Complete()
         {
             await _context.SaveChangesAsync();
+            Dispose();
         }
         public void Dispose()
         {
-            Dispose(true);
+            _context.Dispose();
             GC.SuppressFinalize(this);
-        }
-        protected virtual void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                _context.Dispose();
-            }
         }
     }
 }

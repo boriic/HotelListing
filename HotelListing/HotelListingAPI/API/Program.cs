@@ -8,8 +8,6 @@ using HotelListingAPI.Repository;
 using HotelListingAPI.Repository.Common;
 using HotelListingAPI.Repository.Common.CountryRepository;
 using HotelListingAPI.Repository.Common.HotelRepository;
-using HotelListingAPI.Repository.CountryRepository;
-using HotelListingAPI.Repository.HotelRepository;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;

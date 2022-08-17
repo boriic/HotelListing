@@ -1,4 +1,5 @@
-﻿using HotelListingAPI.DAL.Context;
+﻿using AutoMapper;
+using HotelListingAPI.DAL.Context;
 using HotelListingAPI.Repository.Common;
 using HotelListingAPI.Repository.Common.CountryRepository;
 using HotelListingAPI.Repository.Common.HotelRepository;
@@ -8,15 +9,21 @@ namespace HotelListingAPI.Repository
     public class UnitOfWork : IUnitOfWork
     {
         private readonly HotelListingDbContext _context;
-        public ICountryRepository CountryRepository { get; }
-        public IHotelRepository HotelRepository { get; }
+        private readonly ILoggerFactory _loggerFactory;
+        private readonly IMapper _mapper;
 
-        public UnitOfWork(HotelListingDbContext context, ICountryRepository countryRepository, IHotelRepository hotelRepository)
+        private ICountryRepository _countryRepository;
+        private IHotelRepository _hotelRepository;
+
+        public UnitOfWork(HotelListingDbContext context, ILoggerFactory loggerFactory, IMapper mapper)
         {
             _context = context;
-            CountryRepository = countryRepository;
-            HotelRepository = hotelRepository;
+            _loggerFactory = loggerFactory;
+            _mapper = mapper;
         }
+        public ICountryRepository CountryRepository => _countryRepository ??= new CountryRepository(_context, _loggerFactory.CreateLogger<CountryRepository>(), _mapper);
+        public IHotelRepository HotelRepository => _hotelRepository ??= new HotelRepository(_context, _loggerFactory.CreateLogger<HotelRepository>(), _mapper);
+
         public async Task Complete()
         {
             await _context.SaveChangesAsync();

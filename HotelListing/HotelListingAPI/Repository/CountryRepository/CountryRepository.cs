@@ -7,7 +7,7 @@ using HotelListingAPI.DAL.Entities;
 using HotelListingAPI.Repository.Common.CountryRepository;
 using Microsoft.EntityFrameworkCore;
 
-namespace HotelListingAPI.Repository.CountryRepository
+namespace HotelListingAPI.Repository
 {
     public class CountryRepository : GenericRepository<Country>, ICountryRepository
     {

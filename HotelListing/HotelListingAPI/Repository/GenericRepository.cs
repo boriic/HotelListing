@@ -14,7 +14,6 @@ namespace HotelListingAPI.Repository
         private readonly HotelListingDbContext _context;
         private readonly ILogger _logger;
         private readonly IMapper _mapper;
-
         public GenericRepository(HotelListingDbContext context, ILogger logger, IMapper mapper)
         {
             _context = context;

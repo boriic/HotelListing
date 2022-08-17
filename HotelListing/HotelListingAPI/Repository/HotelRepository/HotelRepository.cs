@@ -7,7 +7,7 @@ using HotelListingAPI.DAL.Entities;
 using HotelListingAPI.Repository.Common.HotelRepository;
 using Microsoft.EntityFrameworkCore;
 
-namespace HotelListingAPI.Repository.HotelRepository
+namespace HotelListingAPI.Repository
 {
     public class HotelRepository : GenericRepository<Hotel>, IHotelRepository
     {

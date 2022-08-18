@@ -8,10 +8,10 @@ namespace HotelListingAPI.Repository.Common
         Task<TResult> GetAsync<TResult>(int? id);
         Task<List<TResult>> GetAllAsync<TResult>();
         Task<PagedResult<TResult>> GetAllAsync<TResult>(QueryParameters queryParameters);
-        Task AddAsync<TSource, TResult>(TSource source);
+        Task AddAsync<TSource>(TSource source);
         Task DeleteAsync(int id);
         Task UpdateAsync<TSource>(int id,TSource source);
         Task<bool> Exists(int id);
-        Task<T> FindBy(Expression<Func<T, bool>> predicate);
+        Task<TResult> FindBy<TResult>(Expression<Func<T, bool>> predicate);
     }
 }

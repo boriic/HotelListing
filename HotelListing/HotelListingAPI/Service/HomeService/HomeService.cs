@@ -14,6 +14,11 @@ namespace HotelListingAPI.Service.HomeService
             _logger = logger;
         }
 
+        /// <summary>
+        /// Method used for sending the email to the address provided in case if someone has a question or want to report something.
+        /// </summary>
+        /// <param name="contactMeDto">Object that will contain all information needed for sending the mail, for example: Sender Email, Name and Message</param>
+        /// <returns></returns>
         public async Task ContactMe(ContactMe contactMeDto)
         {
             _logger.LogInformation($"(Service) {nameof(ContactMe)}");

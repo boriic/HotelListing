@@ -51,7 +51,7 @@ namespace HotelListingAPI.API.Controllers
         {
             _logger.LogInformation($"(Controller) {nameof(GetHotel)} ({id})");
 
-            var hotel = await _hotelService.GetDetailsAsync(id);
+            var hotel = await _hotelService.GetAsync(id);
 
             return hotel;
         }
@@ -68,10 +68,7 @@ namespace HotelListingAPI.API.Controllers
                 throw new BadHttpRequestException("Invalid id");
             }
 
-            if (await _hotelService.HotelExists(updateHotelDto.Name))
-            {
-                throw new ArgumentException($"Hotel with name: {updateHotelDto.Name}, already exists");
-            }
+            await _hotelService.CheckIfOtherHotelWithNameExists(updateHotelDto.Name, id);
 
             await _hotelService.UpdateAsync(id, updateHotelDto);
 

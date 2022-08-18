@@ -22,6 +22,12 @@ namespace HotelListingAPI.Repository
             _mapper = mapper;
         }
 
+        /// <summary>
+        /// Method asynchronously gets the country including the hotels if they have any
+        /// </summary>
+        /// <param name="id">Id of the country that you want to find</param>
+        /// <returns>CountryDto object</returns>
+        /// <exception cref="NotFoundException">This exception will be thrown if country is not found with the given id</exception>
         public async Task<CountryDto> GetDetailsAsync(int id)
         {
             _logger.LogInformation($"(Repository) {nameof(GetDetailsAsync)} ({id})");

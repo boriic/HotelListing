@@ -5,8 +5,7 @@ namespace HotelListingAPI.Service.Common.HotelService
 {
     public interface IHotelService
     {
-        Task<HotelGetUpdateDto> GetAsync(int id);
-        Task<HotelDto> GetDetailsAsync(int id);
+        Task<HotelDto> GetAsync(int id);
         Task<List<HotelGetUpdateDto>> GetAllAsync();
         Task<PagedResult<HotelGetUpdateDto>> GetAllAsync(QueryParameters queryParameters);
         Task AddAsync(HotelCreateDto createHotelDto);
@@ -14,5 +13,6 @@ namespace HotelListingAPI.Service.Common.HotelService
         Task UpdateAsync(int id, HotelGetUpdateDto updateHotelDto);
         Task<bool> HotelExists(string hotelName);
         Task<bool> HotelExists(int hotelId);
+        Task CheckIfOtherHotelWithNameExists(string hotelName, int hotelId);
     }
 }

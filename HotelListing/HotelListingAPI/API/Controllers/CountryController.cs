@@ -47,7 +47,7 @@ namespace HotelListingAPI.API.Controllers
         {
             _logger.LogInformation($"(Controller) Fetching country with id ({id})");
 
-            var country = await _countryService.GetDetailsAsync(id);
+            var country = await _countryService.GetAsync(id);
 
             return country;
         }
@@ -64,10 +64,8 @@ namespace HotelListingAPI.API.Controllers
                 throw new BadHttpRequestException("Invalid id");
             }
 
-            if (await _countryService.CountryExists(updateCountryDto.Name))
-            {
-                throw new ArgumentException($"Country with name: {updateCountryDto.Name}, already exists");
-            }
+            //Throws exception if country already exists
+            await _countryService.CheckIfOtherCountryWithNameExists(updateCountryDto.Name,id);
 
             await _countryService.UpdateAsync(id, updateCountryDto);
 

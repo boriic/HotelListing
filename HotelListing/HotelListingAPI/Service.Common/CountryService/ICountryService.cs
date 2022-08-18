@@ -7,8 +7,7 @@ namespace HotelListingAPI.Service.Common.CountryService
 {
     public interface ICountryService
     {
-        Task<CountryGetUpdateDto> GetAsync(int id);
-        Task<CountryDto> GetDetailsAsync(int id);
+        Task<CountryDto> GetAsync(int id);
         Task<List<CountryGetUpdateDto>> GetAllAsync();
         Task<PagedResult<CountryGetUpdateDto>> GetAllAsync(QueryParameters queryParameters);
         Task AddAsync(CountryCreateDto createCountryDto);
@@ -16,5 +15,6 @@ namespace HotelListingAPI.Service.Common.CountryService
         Task UpdateAsync(int id, CountryGetUpdateDto updateCountryDto);
         Task<bool> CountryExists(string countryName);
         Task<bool> CountryExists(int countryId);
+        Task CheckIfOtherCountryWithNameExists(string countryName, int countryId);
     }
 }

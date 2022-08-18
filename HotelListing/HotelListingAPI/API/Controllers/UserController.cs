@@ -22,9 +22,6 @@ namespace HotelListingAPI.API.Controllers
         // POST: api/v1.0/Account/register
         [HttpPost]
         [Route("register")]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult> Register([FromBody] UserDto userDto)
         {
             _logger.LogInformation($"Registration attempt for {userDto.Email}");
@@ -46,9 +43,6 @@ namespace HotelListingAPI.API.Controllers
         // POST: api/v1.0/Account/login
         [HttpPost]
         [Route("login")]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult> Login([FromBody] LoginDto loginDto)
         {
             _logger.LogInformation($"Login attempt for {loginDto.Email}");
@@ -65,9 +59,6 @@ namespace HotelListingAPI.API.Controllers
         // POST: api/v1.0/Account/refreshtoken
         [HttpPost]
         [Route("refreshtoken")]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult> RefreshToken([FromBody] AuthResponseDto request)
         {
             var authResponse = await _authManager.VerifyRefreshToken(request);

@@ -16,5 +16,6 @@ namespace HotelListingAPI.Service.Common.CountryService
         Task<bool> CountryExists(string countryName);
         Task<bool> CountryExists(int countryId);
         Task CheckIfOtherCountryWithNameExists(string countryName, int countryId);
+        Task<List<CountryGetUpdateDto>> GetCountriesByNameAsync(string countryName);
     }
 }

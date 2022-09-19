@@ -52,6 +52,17 @@ namespace HotelListingAPI.API.Controllers
             return country;
         }
 
+        // GET: api/v1.0/Country/GetCountriesByName/name
+        [HttpGet("GetCountriesByName")]
+        public async Task<ActionResult<IEnumerable<CountryGetUpdateDto>>> GetCountriesByName(string name)
+        {
+            _logger.LogInformation($"(Controller) Fetching countries with name ({name})");
+
+            var countries = await _countryService.GetCountriesByNameAsync(name);
+
+            return countries;
+        }
+
         // PUT: api/v1.0/Country/5
         [HttpPut("{id}")]
         [Authorize]

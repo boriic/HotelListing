@@ -41,5 +41,15 @@ namespace HotelListingAPI.Repository
 
             return country;
         }
+
+        public async Task<List<CountryGetUpdateDto>> GetCountriesByNameAsync(string name)
+        {
+            _logger.LogInformation($"(Repository) {nameof(GetCountriesByNameAsync)} ({name})");
+
+            var countries = await _context.Countries.ProjectTo<CountryGetUpdateDto>(_mapper.ConfigurationProvider).Where(x => x.Name.Contains(name)).ToListAsync();
+
+            return countries;
+
+        }
     }
 }

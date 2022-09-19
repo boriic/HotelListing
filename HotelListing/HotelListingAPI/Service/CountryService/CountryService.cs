@@ -148,5 +148,10 @@ namespace HotelListingAPI.Service.CountryService
                 }
             }
         }
+
+        public async Task<List<CountryGetUpdateDto>> GetCountriesByNameAsync(string countryName)
+        {
+            return await _unitOfWork.CountryRepository.GetCountriesByNameAsync(countryName);
+        }
     }
 }
